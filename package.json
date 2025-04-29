@@ -1,0 +1,16 @@
+{
+  "name": "hemose-project",
+  "version": "1.0.0",
+  "description": "Root package for Hemose project",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start:frontend": "npm --prefix frontend start",
+    "start:backend": "npm --prefix backend start",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  }
+}
