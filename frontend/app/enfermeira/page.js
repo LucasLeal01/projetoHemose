@@ -32,27 +32,27 @@ function EnfermeiraDashboardPage({ user }) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard de Enfermagem</h1>
+      <h1 className="text-2xl font-bold mb-6 text-black">Dashboard de Enfermagem</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold text-gray-700">Pacientes Internados</h2>
-          <p className="text-3xl font-bold text-teal-600">{stats.pacientesInternados}</p>
+          <h2 className="text-lg font-semibold text-black">Pacientes Internados</h2>
+          <p className="text-3xl font-bold text-black">{stats.pacientesInternados}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold text-gray-700">Aguardando Triagem</h2>
-          <p className="text-3xl font-bold text-orange-600">{stats.pacientesTriagem}</p>
+          <h2 className="text-lg font-semibold text-black">Aguardando Triagem</h2>
+          <p className="text-3xl font-bold text-black">{stats.pacientesTriagem}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold text-gray-700">Medicamentos a Administrar</h2>
-          <p className="text-3xl font-bold text-blue-600">{stats.medicamentosAdministrar}</p>
+          <h2 className="text-lg font-semibold text-black">Medicamentos a Administrar</h2>
+          <p className="text-3xl font-bold text-black">{stats.medicamentosAdministrar}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold text-gray-700">Leitos Disponíveis</h2>
-          <p className="text-3xl font-bold text-green-600">{stats.leitosDisponiveis}</p>
+          <h2 className="text-lg font-semibold text-black">Leitos Disponíveis</h2>
+          <p className="text-3xl font-bold text-black">{stats.leitosDisponiveis}</p>
         </div>
       </div>
       
@@ -66,8 +66,8 @@ function EnfermeiraDashboardPage({ user }) {
                 <div key={paciente.id} className="py-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium">{paciente.nome}</p>
-                      <p className="text-sm text-gray-500">Leito: {paciente.leito}</p>
+                      <p className="font-medium text-black">{paciente.nome}</p>
+                      <p className="text-sm text-black">Leito: {paciente.leito}</p>
                     </div>
                     <span className={`px-2 py-1 text-xs rounded-full ${
                       paciente.status === 'Crítico' ? 'bg-red-100 text-red-800' :
@@ -144,7 +144,7 @@ function EnfermeiraDashboardPage({ user }) {
             <tbody className="bg-white divide-y divide-gray-200">
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">Roberto Almeida</div>
+                  <div className="text-sm font-medium text-black">Roberto Almeida</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">12A</div>
@@ -166,7 +166,7 @@ function EnfermeiraDashboardPage({ user }) {
               </tr>
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">Mariana Costa</div>
+                  <div className="text-sm font-medium text-black">Mariana Costa</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">08B</div>
@@ -188,7 +188,7 @@ function EnfermeiraDashboardPage({ user }) {
               </tr>
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">Paulo Ferreira</div>
+                  <div className="text-sm font-medium text-black">Paulo Ferreira</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-500">15C</div>
