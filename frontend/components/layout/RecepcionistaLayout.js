@@ -29,7 +29,7 @@ export default function RecepcionistaLayout({ children }) {
             <span>Olá, {user?.nome || 'Recepcionista'}</span>
             <button 
               onClick={handleLogout}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+              className="px-3 py-1 bg-purple-800 text-white rounded hover:bg-purple-900 text-sm"
             >
               Sair
             </button>
@@ -93,7 +93,7 @@ export default function RecepcionistaLayout({ children }) {
           </nav>
         </aside>
 
-        <main className="flex-1 bg-gray-100 p-6">
+        <main className="flex-1 bg-purple-100 p-6">
           {children}
         </main>
       </div>

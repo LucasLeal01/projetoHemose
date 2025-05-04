@@ -14,22 +14,22 @@ export default function AdminLayout({ children }) {
   };
 
   const isActive = (path) => {
-    return pathname === path ? 'bg-blue-800' : '';
+    return pathname === path ? 'bg-rose-800' : '';
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-blue-700 text-white shadow-md">
+      <header className="bg-rose-700 text-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <h1 className="text-xl font-bold">HEMOSE</h1>
-            <span className="text-sm bg-blue-900 px-2 py-1 rounded">Administração</span>
+            <span className="text-sm bg-rose-900 px-2 py-1 rounded">Administração</span>
           </div>
           <div className="flex items-center space-x-4">
             <span>Olá, {user?.nome || 'Administrador'}</span>
             <button 
               onClick={handleLogout}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+              className="px-3 py-1 bg-rose-800 text-white rounded hover:bg-rose-900 text-sm"
             >
               Sair
             </button>
@@ -38,13 +38,13 @@ export default function AdminLayout({ children }) {
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-64 bg-blue-700 text-white">
+        <aside className="w-64 bg-rose-700 text-white">
           <nav className="p-4">
             <ul className="space-y-2">
               <li>
                 <Link 
                   href="/admin" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin')}`}
                 >
                   Dashboard
                 </Link>
@@ -52,7 +52,7 @@ export default function AdminLayout({ children }) {
               <li>
                 <Link 
                   href="/admin/users" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin/users')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/users')}`}
                 >
                   Gerenciar Usuários
                 </Link>
@@ -60,7 +60,7 @@ export default function AdminLayout({ children }) {
               <li>
                 <Link 
                   href="/admin/pacientes" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin/pacientes')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/pacientes')}`}
                 >
                   Pacientes
                 </Link>
@@ -68,7 +68,7 @@ export default function AdminLayout({ children }) {
               <li>
                 <Link 
                   href="/admin/medicamentos" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin/medicamentos')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/medicamentos')}`}
                 >
                   Medicamentos
                 </Link>
@@ -76,7 +76,7 @@ export default function AdminLayout({ children }) {
               <li>
                 <Link 
                   href="/admin/leitos" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin/leitos')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/leitos')}`}
                 >
                   Leitos
                 </Link>
@@ -84,7 +84,7 @@ export default function AdminLayout({ children }) {
               <li>
                 <Link 
                   href="/admin/relatorios" 
-                  className={`block px-4 py-2 rounded hover:bg-blue-800 ${isActive('/admin/relatorios')}`}
+                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/relatorios')}`}
                 >
                   Relatórios
                 </Link>
@@ -93,7 +93,7 @@ export default function AdminLayout({ children }) {
           </nav>
         </aside>
 
-        <main className="flex-1 bg-gray-100 p-6">
+        <main className="flex-1 bg-rose-100 p-6">
           {children}
         </main>
       </div>
