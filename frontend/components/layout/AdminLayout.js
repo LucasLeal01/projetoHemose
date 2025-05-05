@@ -59,30 +59,6 @@ export default function AdminLayout({ children }) {
               </li>
               <li>
                 <Link 
-                  href="/admin/pacientes" 
-                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/pacientes')}`}
-                >
-                  Pacientes
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/admin/medicamentos" 
-                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/medicamentos')}`}
-                >
-                  Medicamentos
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/admin/leitos" 
-                  className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/leitos')}`}
-                >
-                  Leitos
-                </Link>
-              </li>
-              <li>
-                <Link 
                   href="/admin/relatorios" 
                   className={`block px-4 py-2 rounded hover:bg-rose-800 ${isActive('/admin/relatorios')}`}
                 >

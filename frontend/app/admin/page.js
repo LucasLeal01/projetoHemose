@@ -82,9 +82,6 @@ function AdminDashboardPage({ user }) {
             <a href="/admin/users" className="block w-full text-center bg-rose-700 hover:bg-rose-800 text-white font-bold py-2 px-4 rounded">
               Gerenciar Usuários
             </a>
-            <a href="/admin/pacientes" className="block w-full text-center bg-rose-700 hover:bg-rose-800 text-white font-bold py-2 px-4 rounded">
-              Cadastrar Paciente
-            </a>
           </div>
         </div>
       </div>
