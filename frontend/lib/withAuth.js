@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // Use this for App Router
-import { useAuth } from '@/lib/api';
+import { useAuth } from '@/lib/apiUser';
 
 export default function withAuth(Component, allowedRoles = []) {
   return function AuthenticatedComponent(props) {

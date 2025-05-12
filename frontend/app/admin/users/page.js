@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUsers } from '@/lib/api';
+import { useUsers } from '@/lib/apiUser';
 import withAuth from '@/lib/withAuth';
 
 function AdminUsersPage({ user }) {
