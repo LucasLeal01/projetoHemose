@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Prescricao } from './prescricao.entity';
-import { Internacao } from './internacao.entity';
+import { Prescricao } from '../../entities/prescricao.entity';
+import { Internacao } from '../../entities/internacao.entity';
 
 @Entity('pacientes')
 export class Paciente {

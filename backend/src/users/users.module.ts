@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Funcionario } from './entities/funcionario.entity';
 import { Medico } from './entities/medico.entity';
-import { Paciente } from './entities/paciente.entity';
+import { Paciente } from './paciente/entities/paciente.entity';
 import { Prescricao } from './entities/prescricao.entity';
 import { Medicamento } from './entities/medicamento.entity';
 import { Leito } from './entities/leito.entity';
