@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Paciente } from './paciente.entity';
+import { Paciente } from '../paciente/entities/paciente.entity';
 import { Prontuario } from './prontuario.entity';
 
 @Entity('historico_pacientes')

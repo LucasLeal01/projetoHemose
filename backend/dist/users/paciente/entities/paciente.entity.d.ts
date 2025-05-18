@@ -1,5 +1,5 @@
-import { Prescricao } from './prescricao.entity';
-import { Internacao } from './internacao.entity';
+import { Prescricao } from '../../entities/prescricao.entity';
+import { Internacao } from '../../entities/internacao.entity';
 export declare class Paciente {
     id: number;
     nome: string;

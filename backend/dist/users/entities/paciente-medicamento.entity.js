@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PacienteMedicamento = void 0;
 const typeorm_1 = require("typeorm");
-const paciente_entity_1 = require("./paciente.entity");
+const paciente_entity_1 = require("../paciente/entities/paciente.entity");
 const medicamento_entity_1 = require("./medicamento.entity");
 let PacienteMedicamento = class PacienteMedicamento {
     id;

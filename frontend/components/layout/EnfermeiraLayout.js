@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/lib/api';
+import { useAuth } from '@/lib/apiUser';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

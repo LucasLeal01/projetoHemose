@@ -1,4 +1,4 @@
-import { Paciente } from './paciente.entity';
+import { Paciente } from '../paciente/entities/paciente.entity';
 import { Prontuario } from './prontuario.entity';
 export declare class HistoricoPaciente {
     id: number;

@@ -9,11 +9,13 @@ O Sistema de Prontuário Eletrônico do HEMOSE digitaliza e centraliza os regist
 ## Tecnologias Utilizadas
 
 ### Frontend
+
 - **Framework**: React.js com Next.js
 - **Estilização**: Tailwind CSS
 - **Gerenciamento de Estado**: React Hooks
 
 ### Backend
+
 - **Framework**: NestJS (Node.js)
 - **ORM**: TypeORM
 - **Banco de Dados**: MySQL
@@ -22,23 +24,27 @@ O Sistema de Prontuário Eletrônico do HEMOSE digitaliza e centraliza os regist
 ## Funcionalidades Principais
 
 - **Autenticação e Controle de Acesso**
+
   - Login e logout
   - Autenticação JWT
   - Controle de acesso baseado em perfis (admin, médico, enfermeira, recepcionista)
   - Redirecionamento para interfaces específicas por tipo de usuário
 
 - **Módulo de Administração**
+
   - Dashboard administrativo
   - CRUD completo para gerenciamento de usuários
   - Visualização de estatísticas do sistema
 
 - **Módulo de Médico**
+
   - Dashboard médico
   - Acesso a prontuários
   - Gerenciamento de prescrições
   - Controle de internações
 
 - **Módulo de Enfermagem**
+
   - Dashboard de enfermagem
   - Triagem de pacientes
   - Administração de medicamentos
@@ -54,7 +60,7 @@ O Sistema de Prontuário Eletrônico do HEMOSE digitaliza e centraliza os regist
 
 ## Estrutura do Projeto
 
-```
+```bash
 hemose-project/
 ├── backend/                 # Aplicação NestJS
 │   ├── src/
@@ -78,23 +84,28 @@ hemose-project/
 ## Instalação e Execução
 
 ### Pré-requisitos
+
 - Node.js (v16 ou superior)
 - npm ou yarn
 - MySQL
 
 ### Backend
+
 1. Navegue até a pasta do backend:
-   ```
+
+   ```bash
    cd hemose-project/backend
    ```
 
 2. Instale as dependências:
-   ```
+
+   ```bash
    npm install
    ```
 
 3. Configure o arquivo `.env` com as credenciais do banco de dados:
-   ```
+
+   ```bash
    DB_HOST=localhost
    DB_PORT=3306
    DB_USERNAME=root
@@ -105,23 +116,28 @@ hemose-project/
    ```
 
 4. Inicie o servidor:
-   ```
+
+   ```bash
    npm run start
    ```
 
 ### Frontend
+
 1. Navegue até a pasta do frontend:
-   ```
+
+   ```bash
    cd hemose-project/frontend
    ```
 
 2. Instale as dependências:
-   ```
+
+   ```bash
    npm install
    ```
 
 3. Inicie o servidor de desenvolvimento:
-   ```
+
+   ```bash
    npm run dev
    ```
 
