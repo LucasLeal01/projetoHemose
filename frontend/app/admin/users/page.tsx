@@ -3,12 +3,28 @@
 import { useState, useEffect } from 'react';
 import { useUsers } from '@/lib/apiUser';
 import withAuth from '@/lib/withAuth';
+import { User, UserRole } from '@/types';
 
-function AdminUsersPage({ user }) {
-  const [activeTab, setActiveTab] = useState('todos');
-  const [showModal, setShowModal] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({
+
+// Interface para os dados do formulário
+interface FormData {
+  nome: string;
+  email: string;
+  senha?: string; 
+  tipo: UserRole;
+  ativo: boolean;
+}
+
+// Interface para as props do componente
+interface AdminUsersPageProps {
+  user: User;
+}
+
+function AdminUsersPage({ user }: AdminUsersPageProps) {
+  const [activeTab, setActiveTab] = useState<'todos' | UserRole>('todos');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [formData, setFormData] = useState<FormData>({
     nome: '',
     email: '',
     senha: '',
@@ -27,10 +43,11 @@ function AdminUsersPage({ user }) {
   } = useUsers();
 
   useEffect(() => {
+    // Carrega a lista de usuários quando o componente é montado
     fetchUsers();
   }, []);
 
-  const handleTabChange = async (tab) => {
+  const handleTabChange = async (tab: 'todos' | UserRole) => {
     setActiveTab(tab);
     if (tab === 'todos') {
       await fetchUsers();
@@ -39,8 +56,10 @@ function AdminUsersPage({ user }) {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value
@@ -59,7 +78,7 @@ function AdminUsersPage({ user }) {
     setShowModal(true);
   };
 
-  const openEditModal = (user) => {
+  const openEditModal = (user: User) => {
     setEditingUser(user);
     setFormData({
       nome: user.nome,
@@ -71,7 +90,7 @@ function AdminUsersPage({ user }) {
     setShowModal(true);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (editingUser) {
@@ -91,7 +110,7 @@ function AdminUsersPage({ user }) {
     }
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId: number | string) => {
     if (window.confirm('Tem certeza que deseja excluir este usuário?')) {
       try {
         await deleteUser(userId);
@@ -105,6 +124,28 @@ function AdminUsersPage({ user }) {
   const filteredUsers = activeTab === 'todos' 
     ? users 
     : users.filter(user => user.tipo === activeTab);
+
+  // Função para determinar o nome de exibição do tipo de usuário
+  const getUserTypeName = (tipo: UserRole): string => {
+    switch (tipo) {
+      case 'admin': return 'Administrador';
+      case 'medico': return 'Médico';
+      case 'enfermeira': return 'Enfermeira';
+      case 'recepcionista': return 'Recepcionista';
+      default: return tipo;
+    }
+  };
+
+  // Função para determinar a classe de cor baseada no tipo de usuário
+  const getUserTypeColorClass = (tipo: UserRole): string => {
+    switch (tipo) {
+      case 'admin': return 'bg-purple-100 text-purple-800';
+      case 'medico': return 'bg-blue-100 text-blue-800';
+      case 'enfermeira': return 'bg-green-100 text-green-800';
+      case 'recepcionista': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -198,16 +239,8 @@ function AdminUsersPage({ user }) {
                           <h3 className="text-lg font-medium text-gray-900">{user.nome}</h3>
                           <p className="text-sm text-gray-500">{user.email}</p>
                           <div className="mt-1 flex items-center">
-                            <span className={`px-2 py-1 text-xs rounded-full ${
-                              user.tipo === 'admin' ? 'bg-purple-100 text-purple-800' :
-                              user.tipo === 'medico' ? 'bg-blue-100 text-blue-800' :
-                              user.tipo === 'enfermeira' ? 'bg-green-100 text-green-800' :
-                              'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {user.tipo === 'admin' ? 'Administrador' :
-                               user.tipo === 'medico' ? 'Médico' :
-                               user.tipo === 'enfermeira' ? 'Enfermeira' :
-                               'Recepcionista'}
+                            <span className={`px-2 py-1 text-xs rounded-full ${getUserTypeColorClass(user.tipo)}`}>
+                              {getUserTypeName(user.tipo)}
                             </span>
                             <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
                               user.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -348,3 +381,11 @@ function AdminUsersPage({ user }) {
 }
 
 export default withAuth(AdminUsersPage, ['admin']);
+            
+            
+/* 
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+   */

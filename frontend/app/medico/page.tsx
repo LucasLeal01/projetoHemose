@@ -2,34 +2,87 @@
 
 import { useState, useEffect } from 'react';
 import withAuth from '@/lib/withAuth';
+import { User, Stats, Atendimento } from '@/types';
+import { usePacientes } from '@/lib/apiPaciente';
 
-function MedicoDashboardPage({ user }) {
-  const [stats, setStats] = useState({
-    totalPacientes: 0,
+// Interface para as props do componente
+interface MedicoDashboardPageProps {
+  user: User;
+}
+
+// Interface para atividades recentes
+interface AtividadeMedica {
+  id: number;
+  data: string;
+  descricao: string;
+}
+
+function MedicoDashboardPage({ user }: MedicoDashboardPageProps) {
+  // Estados para armazenar dados dinâmicos do médico
+  const [stats, setStats] = useState<Stats>({
     pacientesHoje: 0,
     prescricoesAtivas: 0,
     internacoesAtivas: 0,
+    totalPacientes: 0
   });
 
-  const [proximosAtendimentos, setProximosAtendimentos] = useState([]);
+  const [proximosAtendimentos, setProximosAtendimentos] = useState<Atendimento[]>([]);
+  const [atividades, setAtividades] = useState<AtividadeMedica[]>([]);
+  const { fetchPacientes, loading: loadingPacientes } = usePacientes();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Em uma implementação real, esses dados viriam da API
-    // Por enquanto, vamos usar dados fictícios
-    setStats({
-      totalPacientes: 48,
-      pacientesHoje: 12,
-      prescricoesAtivas: 35,
-      internacoesAtivas: 8,
-    });
+    // Função para carregar todos os dados do dashboard médico
+    const carregarDadosMedico = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Buscar pacientes
+        const pacientes = await fetchPacientes();
+        
+        // Em uma aplicação real, estes dados viriam de endpoints específicos
+        // Por enquanto, vamos calcular baseado nos dados que temos ou simular
+        setStats({
+          totalPacientes: pacientes.length,
+          pacientesHoje: Math.floor(Math.random() * 15) + 5, // Simulando entre 5 e 20 pacientes hoje
+          prescricoesAtivas: Math.floor(Math.random() * 30) + 10, // Simulando entre 10 e 40 prescrições
+          internacoesAtivas: Math.floor(Math.random() * 10) + 3 // Simulando entre 3 e 13 internações
+        });
+        
+        // Próximos atendimentos simulados, em uma app real viriam da API de agendamentos
+        setProximosAtendimentos([
+          { id: 1, nome: pacientes[0]?.nome || 'Maria Silva', horario: '13:30', tipo: 'Consulta' },
+          { id: 2, nome: pacientes[1]?.nome || 'João Santos', horario: '14:15', tipo: 'Retorno' },
+          { id: 3, nome: pacientes[2]?.nome || 'Ana Oliveira', horario: '15:00', tipo: 'Exame' },
+          { id: 4, nome: pacientes[3]?.nome || 'Carlos Pereira', horario: '16:30', tipo: 'Consulta' },
+        ]);
+        
+        // Atividades recentes simuladas
+        setAtividades([
+          { id: 1, data: 'Hoje, 10:15', descricao: `Prontuário atualizado: ${pacientes[0]?.nome || 'Maria Silva'}` },
+          { id: 2, data: 'Hoje, 09:30', descricao: `Nova prescrição: ${pacientes[1]?.nome || 'João Santos'} - Dipirona 500mg` },
+          { id: 3, data: 'Ontem, 16:45', descricao: `Alta concedida: ${pacientes[2]?.nome || 'Ana Oliveira'}` },
+          { id: 4, data: 'Ontem, 14:20', descricao: `Nova internação: ${pacientes[3]?.nome || 'Carlos Pereira'} - Leito 08` }
+        ]);
+      } catch (error) {
+        console.error('Erro ao carregar dados do dashboard médico:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setProximosAtendimentos([
-      { id: 1, nome: 'Maria Silva', horario: '13:30', tipo: 'Consulta' },
-      { id: 2, nome: 'João Santos', horario: '14:15', tipo: 'Retorno' },
-      { id: 3, nome: 'Ana Oliveira', horario: '15:00', tipo: 'Exame' },
-      { id: 4, nome: 'Carlos Pereira', horario: '16:30', tipo: 'Consulta' },
-    ]);
-  }, []);
+    carregarDadosMedico();
+  }, []); // Array vazio para executar apenas na montagem do componente
+
+  // Exibe loader enquanto os dados estão carregando
+  if (isLoading || loadingPacientes) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-600"></div>
+        <p className="ml-2 text-blue-700">Carregando dados médicos...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -111,26 +164,24 @@ function MedicoDashboardPage({ user }) {
         <h2 className="text-lg font-semibold text-black mb-4">Atividades Recentes</h2>
         
         <div className="space-y-4">
-          <div className="border-l-4 border-blue-700 pl-4 py-2">
-            <p className="text-sm text-black">Hoje, 10:15</p>
-            <p className="font-medium text-black">Prontuário atualizado: Maria Silva</p>
-          </div>
-          <div className="border-l-4 border-blue-700 pl-4 py-2">
-            <p className="text-sm text-black">Hoje, 09:30</p>
-            <p className="font-medium text-black">Nova prescrição: João Santos - Dipirona 500mg</p>
-          </div>
-          <div className="border-l-4 border-blue-700 pl-4 py-2">
-            <p className="text-sm text-black">Ontem, 16:45</p>
-            <p className="font-medium text-black">Alta concedida: Ana Oliveira</p>
-          </div>
-          <div className="border-l-4 border-blue-700 pl-4 py-2">
-            <p className="text-sm text-black">Ontem, 14:20</p>
-            <p className="font-medium text-black">Nova internação: Carlos Pereira - Leito 08</p>
-          </div>
+          {atividades.map((atividade) => (
+            <div key={atividade.id} className="border-l-4 border-blue-700 pl-4 py-2">
+              <p className="text-sm text-black">{atividade.data}</p>
+              <p className="font-medium text-black">{atividade.descricao}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
+// HOC para proteger a rota, permitindo apenas médicos
 export default withAuth(MedicoDashboardPage, ['medico']);
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+ */

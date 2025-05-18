@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/lib/apiUser';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/apiUser';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [senha, setSenha] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const { login } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -22,7 +22,7 @@ export default function LoginPage() {
       
       if (result.success) {
         // Redirecionar baseado no tipo de usuário
-        switch (result.user.tipo) {
+        switch (result.user?.tipo) {
           case 'admin':
             router.push('/admin');
             break;
@@ -41,7 +41,7 @@ export default function LoginPage() {
       } else {
         setError(result.message || 'Falha na autenticação');
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || 'Ocorreu um erro durante o login');
     } finally {
       setLoading(false);
@@ -99,7 +99,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
@@ -109,3 +109,10 @@ export default function LoginPage() {
     </div>
   );
 }
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+   */

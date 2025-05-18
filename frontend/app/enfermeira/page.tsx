@@ -2,16 +2,39 @@
 
 import { useState, useEffect } from 'react';
 import withAuth from '@/lib/withAuth';
+import { User, Stats } from '@/types';
 
-function EnfermeiraDashboardPage({ user }) {
-  const [stats, setStats] = useState({
+interface EnfermeiraDashboardPageProps {
+  user: User;
+}
+
+interface PacienteUrgente {
+  id: number | string;
+  nome: string;
+  leito: string;
+  status: string;
+  sinaisVitais: string;
+}
+
+interface Medicacao {
+  id: number | string;
+  paciente: string;
+  leito: string;
+  medicamento: string;
+  dosagem: string;
+  horario: string;
+}
+
+function EnfermeiraDashboardPage({ user }: EnfermeiraDashboardPageProps) {
+  const [stats, setStats] = useState<Stats>({
     pacientesInternados: 0,
     pacientesTriagem: 0,
     medicamentosAdministrar: 0,
     leitosDisponiveis: 0,
   });
 
-  const [pacientesUrgentes, setPacientesUrgentes] = useState([]);
+  const [pacientesUrgentes, setPacientesUrgentes] = useState<PacienteUrgente[]>([]);
+  const [medicacoes, setMedicacoes] = useState<Medicacao[]>([]);
 
   useEffect(() => {
     // Em uma implementação real, esses dados viriam da API
@@ -27,6 +50,12 @@ function EnfermeiraDashboardPage({ user }) {
       { id: 1, nome: 'Roberto Almeida', leito: '12A', status: 'Crítico', sinaisVitais: 'PA: 160/100, FC: 110' },
       { id: 2, nome: 'Mariana Costa', leito: '08B', status: 'Instável', sinaisVitais: 'PA: 90/60, FC: 120' },
       { id: 3, nome: 'Paulo Ferreira', leito: '15C', status: 'Em observação', sinaisVitais: 'PA: 140/90, FC: 95' },
+    ]);
+
+    setMedicacoes([
+      { id: 1, paciente: 'Roberto Almeida', leito: '12A', medicamento: 'Dipirona', dosagem: '500mg', horario: '12:00' },
+      { id: 2, paciente: 'Mariana Costa', leito: '08B', medicamento: 'Amoxicilina', dosagem: '500mg', horario: '12:45' },
+      { id: 3, paciente: 'Paulo Ferreira', leito: '15C', medicamento: 'Paracetamol', dosagem: '750mg', horario: '13:15' },
     ]);
   }, []);
 
@@ -142,72 +171,30 @@ function EnfermeiraDashboardPage({ user }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-green-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Roberto Almeida</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">12A</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Dipirona</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">500mg</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black font-medium">12:30</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded text-xs">
-                    Administrar
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Mariana Costa</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">08B</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Amoxicilina</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">500mg</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black font-medium">12:45</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded text-xs">
-                    Administrar
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Paulo Ferreira</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">15C</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Paracetamol</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">750mg</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">13:15</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded text-xs">
-                    Administrar
-                  </button>
-                </td>
-              </tr>
+              {medicacoes.map((med) => (
+                <tr key={med.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-black">{med.paciente}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{med.leito}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{med.medicamento}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{med.dosagem}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black font-medium">{med.horario}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded text-xs">
+                      Administrar
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -223,3 +210,10 @@ function EnfermeiraDashboardPage({ user }) {
 }
 
 export default withAuth(EnfermeiraDashboardPage, ['enfermeira']);
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+   */

@@ -3,8 +3,14 @@
 import { useAuth } from '@/lib/apiUser';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { User } from '@/types';
+import React from 'react';
 
-export default function EnfermeiraLayout({ children }) {
+interface EnfermeiraLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function EnfermeiraLayout({ children }: EnfermeiraLayoutProps) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
@@ -13,7 +19,7 @@ export default function EnfermeiraLayout({ children }) {
     window.location.href = '/login';
   };
 
-  const isActive = (path) => {
+  const isActive = (path: string): string => {
     return pathname === path ? 'bg-green-800' : '';
   };
 
@@ -100,3 +106,10 @@ export default function EnfermeiraLayout({ children }) {
     </div>
   );
 }
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+   */

@@ -2,34 +2,109 @@
 
 import { useState, useEffect } from 'react';
 import withAuth from '@/lib/withAuth';
+import { User, Stats, FilaEspera } from '@/types';
+import { usePacientes } from '@/lib/apiPaciente';
 
-function RecepcionistaDashboardPage({ user }) {
-  const [stats, setStats] = useState({
+// Interface para as props do componente
+interface RecepcionistaDashboardPageProps {
+  user: User;
+}
+
+// Interface para agendamentos futuros
+interface Agendamento {
+  id: number;
+  data: string;
+  horario: string;
+  paciente: string;
+  tipo: string;
+  medico: string;
+}
+
+function RecepcionistaDashboardPage({ user }: RecepcionistaDashboardPageProps) {
+  // Estados para armazenar dados dinâmicos da recepção
+  const [stats, setStats] = useState<Stats>({
     pacientesHoje: 0,
     agendamentosHoje: 0,
     pacientesAguardando: 0,
     proximosAgendamentos: 0,
   });
 
-  const [filaEspera, setFilaEspera] = useState([]);
+  const [filaEspera, setFilaEspera] = useState<FilaEspera[]>([]);
+  const [proximosAgendamentos, setProximosAgendamentos] = useState<Agendamento[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const { fetchPacientes, loading: loadingPacientes } = usePacientes();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setStats({
-      pacientesHoje: 24,
-      agendamentosHoje: 35,
-      pacientesAguardando: 6,
-      proximosAgendamentos: 12,
-    });
+    // Função para carregar todos os dados da dashboard
+    const carregarDados = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Buscar pacientes reais para utilizar nos dados simulados
+        const pacientes = await fetchPacientes();
+        
+        // Dados estatísticos - simulados mas baseados em dados reais quando possível
+        setStats({
+          pacientesHoje: pacientes.length > 0 ? Math.min(pacientes.length * 2, 24) : 24,
+          agendamentosHoje: pacientes.length > 0 ? Math.min(pacientes.length * 3, 35) : 35,
+          pacientesAguardando: pacientes.length > 0 ? Math.min(pacientes.length / 2, 6) : 6,
+          proximosAgendamentos: pacientes.length > 0 ? Math.min(pacientes.length, 12) : 12,
+        });
 
-    setFilaEspera([
-      { id: 1, nome: 'José Silva', horario: '11:30', tipo: 'Consulta', medico: 'Dr. Carlos Santos', status: 'Aguardando' },
-      { id: 2, nome: 'Fernanda Lima', horario: '11:45', tipo: 'Retorno', medico: 'Dra. Ana Oliveira', status: 'Triagem' },
-      { id: 3, nome: 'Ricardo Souza', horario: '12:00', tipo: 'Exame', medico: 'Dr. Paulo Mendes', status: 'Aguardando' },
-      { id: 4, nome: 'Camila Ferreira', horario: '12:15', tipo: 'Consulta', medico: 'Dra. Mariana Costa', status: 'Aguardando' },
-      { id: 5, nome: 'Eduardo Martins', horario: '12:30', tipo: 'Consulta', medico: 'Dr. Carlos Santos', status: 'Aguardando' },
-      { id: 6, nome: 'Luciana Alves', horario: '12:45', tipo: 'Retorno', medico: 'Dra. Ana Oliveira', status: 'Aguardando' },
-    ]);
-  }, []);
+        // Fila de espera - utilizando nomes de pacientes reais quando disponíveis
+        setFilaEspera([
+          { id: 1, nome: pacientes[0]?.nome || 'José Silva', horario: '11:30', tipo: 'Consulta', medico: 'Dr. Carlos Santos', status: 'Aguardando' },
+          { id: 2, nome: pacientes[1]?.nome || 'Fernanda Lima', horario: '11:45', tipo: 'Retorno', medico: 'Dra. Ana Oliveira', status: 'Triagem' },
+          { id: 3, nome: pacientes[2]?.nome || 'Ricardo Souza', horario: '12:00', tipo: 'Exame', medico: 'Dr. Paulo Mendes', status: 'Aguardando' },
+          { id: 4, nome: pacientes[3]?.nome || 'Camila Ferreira', horario: '12:15', tipo: 'Consulta', medico: 'Dra. Mariana Costa', status: 'Aguardando' },
+          { id: 5, nome: pacientes[4]?.nome || 'Eduardo Martins', horario: '12:30', tipo: 'Consulta', medico: 'Dr. Carlos Santos', status: 'Aguardando' },
+          { id: 6, nome: pacientes[5]?.nome || 'Luciana Alves', horario: '12:45', tipo: 'Retorno', medico: 'Dra. Ana Oliveira', status: 'Aguardando' },
+        ]);
+
+        // Agendamentos futuros - utilizando nomes de pacientes reais quando disponíveis
+        setProximosAgendamentos([
+          { id: 1, data: '29/04/2025', horario: '09:00', paciente: pacientes[6]?.nome || 'Antônio Gomes', tipo: 'Consulta', medico: 'Dr. Carlos Santos' },
+          { id: 2, data: '29/04/2025', horario: '10:30', paciente: pacientes[7]?.nome || 'Juliana Mendes', tipo: 'Retorno', medico: 'Dra. Ana Oliveira' },
+          { id: 3, data: '29/04/2025', horario: '14:15', paciente: pacientes[8]?.nome || 'Roberto Almeida', tipo: 'Exame', medico: 'Dr. Paulo Mendes' }
+        ]);
+      } catch (error) {
+        console.error('Erro ao carregar dados do dashboard:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    carregarDados();
+  }, []); // Array vazio para executar apenas na montagem do componente
+
+  // Exibe loader enquanto os dados estão carregando
+  if (isLoading || loadingPacientes) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-600"></div>
+        <p className="ml-2 text-purple-700">Carregando dados...</p>
+      </div>
+    );
+  }
+
+  // Manipulador para atualizar a fila (simulado)
+  const handleAtualizarFila = () => {
+    // Em um sistema real, isso buscaria os dados mais recentes da API
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  // Manipulador para busca (simulado)
+  const handleSearch = () => {
+    // Em um sistema real, isso buscaria pacientes na API
+    if (searchTerm.trim() === '') return;
+    
+    alert(`Buscando por: ${searchTerm}`);
+    setSearchTerm('');
+  };
 
   return (
     <div>
@@ -62,7 +137,10 @@ function RecepcionistaDashboardPage({ user }) {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-black">Fila de Espera</h2>
             <div className="flex space-x-2">
-              <button className="px-3 py-1 bg-purple-700 text-white rounded text-sm hover:bg-purple-800">
+              <button 
+                className="px-3 py-1 bg-purple-700 text-white rounded text-sm hover:bg-purple-800"
+                onClick={handleAtualizarFila}
+              >
                 Atualizar
               </button>
               <button className="px-3 py-1 bg-purple-700 text-white rounded text-sm hover:bg-purple-800">
@@ -155,10 +233,14 @@ function RecepcionistaDashboardPage({ user }) {
               <input
                 type="text"
                 placeholder="Nome ou CPF do paciente"
-                className="flex-1 px-3 py-2 border border-purple-300 rounded-l-md focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                style={{ '::placeholder': { color: '#333333' } }}
+                className="flex-1 px-3 py-2 border border-purple-300 rounded-l-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 placeholder:text-[#333333]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button className="bg-purple-700 text-white px-4 py-2 rounded-r-md hover:bg-purple-800">
+              <button 
+                className="bg-purple-700 text-white px-4 py-2 rounded-r-md hover:bg-purple-800"
+                onClick={handleSearch}
+              >
                 Buscar
               </button>
             </div>
@@ -194,66 +276,28 @@ function RecepcionistaDashboardPage({ user }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-purple-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">29/04/2025</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">09:00</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Antônio Gomes</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Consulta</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Dr. Carlos Santos</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="text-black hover:text-gray-700">Editar</button>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">29/04/2025</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">10:30</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Juliana Mendes</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Retorno</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Dra. Ana Oliveira</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="text-black hover:text-gray-700">Editar</button>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">29/04/2025</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">14:15</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-black">Roberto Almeida</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Exame</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-black">Dr. Paulo Mendes</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <button className="text-black hover:text-gray-700">Editar</button>
-                </td>
-              </tr>
+              {proximosAgendamentos.map((agendamento) => (
+                <tr key={agendamento.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{agendamento.data}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{agendamento.horario}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-black">{agendamento.paciente}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{agendamento.tipo}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-black">{agendamento.medico}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <button className="text-black hover:text-gray-700">Editar</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -268,4 +312,13 @@ function RecepcionistaDashboardPage({ user }) {
   );
 }
 
+// HOC para proteger a rota, permitindo apenas recepcionistas
 export default withAuth(RecepcionistaDashboardPage, ['recepcionista']);
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+
+*/

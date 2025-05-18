@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+const path = require('path')
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -6,4 +7,9 @@ const nextConfig: NextConfig = {
   },
 };
 
+module.exports = {
+  turbopack: {
+    root: path.join(__dirname, '..'),
+  },
+}
 export default nextConfig;

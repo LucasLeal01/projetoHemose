@@ -1,18 +1,30 @@
 import { useState } from 'react';
-import api from './api'; // Reutiliza a instância Axios com interceptor
+import api from './api';
+import { Paciente } from '@/types';
 
-export const usePacientes = () => {
-  const [pacientes, setPacientes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+interface PacientesHook {
+  pacientes: Paciente[];
+  loading: boolean;
+  error: string | null;
+  fetchPacientes: () => Promise<Paciente[]>;
+  fetchPaciente: (id: number | string) => Promise<Paciente>;
+  createPaciente: (pacienteData: Partial<Paciente>) => Promise<Paciente>;
+  updatePaciente: (id: number | string, pacienteData: Partial<Paciente>) => Promise<Paciente>;
+  deletePaciente: (id: number | string) => Promise<boolean>;
+}
 
-  const fetchPacientes = async () => {
+export const usePacientes = (): PacientesHook => {
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchPacientes = async (): Promise<Paciente[]> => {
     try {
       setLoading(true);
-      const response = await api.get('/paciente');
+      const response = await api.get<Paciente[]>('/paciente');
       setPacientes(response.data);
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao buscar pacientes';
       setError(message);
       throw new Error(message);
@@ -21,12 +33,12 @@ export const usePacientes = () => {
     }
   };
 
-  const fetchPaciente = async (id) => {
+  const fetchPaciente = async (id: number | string): Promise<Paciente> => {
     try {
       setLoading(true);
-      const response = await api.get(`/paciente/${id}`);
+      const response = await api.get<Paciente>(`/paciente/${id}`);
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao buscar paciente';
       setError(message);
       throw new Error(message);
@@ -35,13 +47,13 @@ export const usePacientes = () => {
     }
   };
 
-  const createPaciente = async (pacienteData) => {
+  const createPaciente = async (pacienteData: Partial<Paciente>): Promise<Paciente> => {
     try {
       setLoading(true);
-      const response = await api.post('/paciente', pacienteData);
+      const response = await api.post<Paciente>('/paciente', pacienteData);
       setPacientes([...pacientes, response.data]);
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao criar paciente';
       setError(message);
       throw new Error(message);
@@ -50,13 +62,13 @@ export const usePacientes = () => {
     }
   };
 
-  const updatePaciente = async (id, pacienteData) => {
+  const updatePaciente = async (id: number | string, pacienteData: Partial<Paciente>): Promise<Paciente> => {
     try {
       setLoading(true);
-      const response = await api.patch(`/paciente/${id}`, pacienteData);
+      const response = await api.patch<Paciente>(`/paciente/${id}`, pacienteData);
       setPacientes(pacientes.map(p => p.id === id ? response.data : p));
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao atualizar paciente';
       setError(message);
       throw new Error(message);
@@ -65,13 +77,13 @@ export const usePacientes = () => {
     }
   };
 
-  const deletePaciente = async (id) => {
+  const deletePaciente = async (id: number | string): Promise<boolean> => {
     try {
       setLoading(true);
       await api.delete(`/paciente/${id}`);
       setPacientes(pacientes.filter(p => p.id !== id));
       return true;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao excluir paciente';
       setError(message);
       throw new Error(message);
@@ -91,3 +103,12 @@ export const usePacientes = () => {
     deletePaciente,
   };
 };
+            
+            
+/*  
+ __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+
+   */

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import api from "./api";
-
+import { User, AuthResponse } from '@/types';
 
 // Hook personalizado para autenticação
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -19,22 +19,22 @@ export const useAuth = () => {
     setLoading(false);
   }, []);
 
-  const login = async (email, senha) => {
+  const login = async (email: string, senha: string): Promise<AuthResponse> => {
     try {
       setLoading(true);
-      const response = await api.post('/auth/login', { email, senha });
+      const response = await api.post<AuthResponse>('/auth/login', { email, senha });
       
       if (response.data.success) {
-        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('token', response.data.access_token!);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        setUser(response.data.user);
+        setUser(response.data.user!);
         setError(null);
         return { success: true, user: response.data.user };
       } else {
         setError(response.data.message || 'Falha na autenticação');
         return { success: false, message: response.data.message };
       }
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao fazer login';
       setError(message);
       return { success: false, message };
@@ -49,9 +49,9 @@ export const useAuth = () => {
     setUser(null);
   };
 
-  const isAuthenticated = () => !!user;
+  const isAuthenticated = (): boolean => !!user;
 
-  const hasRole = (role) => {
+  const hasRole = (role: string): boolean => {
     return user?.tipo === role;
   };
 
@@ -66,20 +66,30 @@ export const useAuth = () => {
   };
 };
 
-// Hook para operações CRUD de usuários
-export const useUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+interface UsersHook {
+  users: User[];
+  loading: boolean;
+  error: string | null;
+  fetchUsers: (role?: string | null) => Promise<User[]>;
+  createUser: (userData: Partial<User>) => Promise<User>;
+  updateUser: (id: number | string, userData: Partial<User>) => Promise<User>;
+  deleteUser: (id: number | string) => Promise<boolean>;
+}
 
-  const fetchUsers = async (role = null) => {
+// Hook para operações CRUD de usuários
+export const useUsers = (): UsersHook => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUsers = async (role: string | null = null): Promise<User[]> => {
     try {
       setLoading(true);
-      const url = role ? `/users?role=${role}` : '/users';
-      const response = await api.get(url);
+      const endpoint = role ? `/users?role=${role}` : '/users';
+      const response = await api.get<User[]>(endpoint);
       setUsers(response.data);
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao buscar usuários';
       setError(message);
       throw new Error(message);
@@ -88,27 +98,13 @@ export const useUsers = () => {
     }
   };
 
-  const fetchUser = async (id) => {
+  const createUser = async (userData: Partial<User>): Promise<User> => {
     try {
       setLoading(true);
-      const response = await api.get(`/users/${id}`);
-      return response.data;
-    } catch (err) {
-      const message = err.response?.data?.message || 'Erro ao buscar usuário';
-      setError(message);
-      throw new Error(message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createUser = async (userData) => {
-    try {
-      setLoading(true);
-      const response = await api.post('/users', userData);
+      const response = await api.post<User>('/users', userData);
       setUsers([...users, response.data]);
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao criar usuário';
       setError(message);
       throw new Error(message);
@@ -117,13 +113,13 @@ export const useUsers = () => {
     }
   };
 
-  const updateUser = async (id, userData) => {
+  const updateUser = async (id: number | string, userData: Partial<User>): Promise<User> => {
     try {
       setLoading(true);
-      const response = await api.patch(`/users/${id}`, userData);
-      setUsers(users.map(user => user.id === id ? response.data : user));
+      const response = await api.put<User>(`/users/${id}`, userData);
+      setUsers(users.map(u => u.id === id ? response.data : u));
       return response.data;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao atualizar usuário';
       setError(message);
       throw new Error(message);
@@ -132,13 +128,13 @@ export const useUsers = () => {
     }
   };
 
-  const deleteUser = async (id) => {
+  const deleteUser = async (id: number | string): Promise<boolean> => {
     try {
       setLoading(true);
       await api.delete(`/users/${id}`);
-      setUsers(users.filter(user => user.id !== id));
+      setUsers(users.filter(u => u.id !== id));
       return true;
-    } catch (err) {
+    } catch (err: any) {
       const message = err.response?.data?.message || 'Erro ao excluir usuário';
       setError(message);
       throw new Error(message);
@@ -152,11 +148,15 @@ export const useUsers = () => {
     loading,
     error,
     fetchUsers,
-    fetchUser,
     createUser,
     updateUser,
     deleteUser,
   };
 };
-
-export default api;
+            
+/*             
+  __  ____ ____ _  _ 
+ / _\/ ___) ___) )( \
+/    \___ \___ ) \/ (
+\_/\_(____(____|____/
+ */
